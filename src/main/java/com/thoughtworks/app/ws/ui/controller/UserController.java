@@ -1,5 +1,6 @@
 package com.thoughtworks.app.ws.ui.controller;
 
+import com.thoughtworks.app.ws.exceptions.UserServiceException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,9 +44,8 @@ public class UserController {
 					MediaType.APPLICATION_JSON_VALUE
 					})
 	public ResponseEntity<UserRest> getUser(@PathVariable String userId) {
-		String name = null;
-		int length = name.length();
-		
+//		if (true) throw new UserServiceException("A user service exception is thrown");
+//
 		if ( users.containsKey(userId) ) {
 			return new ResponseEntity<>(users.get(userId),HttpStatus.OK );
 		} else {
