@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import com.thoughtworks.app.ws.ui.model.response.UserRest;
+
+import org.springframework.http.MediaType;
 
 @RestController
 @RequestMapping("/users")
@@ -21,9 +24,18 @@ public class UserController {
 				", limit: "+limit+" and sort: "+sort;
 	}
 	
-	@GetMapping(path = "/{userId}")
-	public String getUser(@PathVariable String userId) {
-		return "get user was called with userId: "+userId;
+	@GetMapping(path = "/{userId}", 
+			produces = {
+					MediaType.APPLICATION_XML_VALUE, 
+					MediaType.APPLICATION_JSON_VALUE
+					})
+	public UserRest getUser(@PathVariable String userId) {
+		UserRest returnValue = new UserRest();
+		returnValue.setFirstName("Aritra");
+		returnValue.setLastName("Chaudhury");
+		returnValue.setEmail("aritra.chaudhury@thoughtworks.com");
+		
+		return returnValue;
 	}
 	
 	@PostMapping
