@@ -17,7 +17,6 @@ import com.thoughtworks.app.ws.ui.model.request.UserDetailsRequestModel;
 import com.thoughtworks.app.ws.ui.model.response.UserRest;
 import jakarta.validation.Valid;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
@@ -37,18 +36,21 @@ public class UserController {
 	public String getUsers(@RequestParam(value="page", defaultValue = "1") int page,
 			@RequestParam(value="limit",defaultValue = "50") int limit,
 			@RequestParam(value="sort",defaultValue = "desc",required = false) String sort) {
-		return "get user was called with page: "+page+
-				", limit: "+limit+" and sort: "+sort;
+		return getSortOrderByPageLimit(page, limit, sort);
 	}
-	
+
+	private String getSortOrderByPageLimit(int page, int limit, String sort) {
+		return "get user was called with page: " + page +
+				", limit: " + limit + " and sort: " + sort;
+	}
+
 	@GetMapping(path = "/{userId}", 
 			produces = {
 					MediaType.APPLICATION_XML_VALUE, 
 					MediaType.APPLICATION_JSON_VALUE
 					})
 	public ResponseEntity<UserRest> getUser(@PathVariable String userId) {
-//		if (true) throw new UserServiceException("A user service exception is thrown");
-//
+
 		if ( users.containsKey(userId) ) {
 			return new ResponseEntity<>(users.get(userId),HttpStatus.OK );
 		} else {
@@ -82,19 +84,13 @@ public class UserController {
 	public UserRest updateUser(@PathVariable String userId,
 			@Valid @RequestBody UpdateUserDetailsRequestModel userDetails ) {
 		
-		UserRest storedUserDetails = users.get(userId);
-		storedUserDetails.setFirstName(userDetails.getFirstName());
-		storedUserDetails.setLastName(userDetails.getLastName());
-
-		users.put(userId, storedUserDetails);
-		
+		UserRest storedUserDetails = userService.updateUser(userId, userDetails);
 		return storedUserDetails;
 	}
 
 	@DeleteMapping(path = "/{userId}")
 	public ResponseEntity<Void> deleteUser(@PathVariable String userId) {
-		users.remove(userId);
-		
+		userService.deleteUser(userId);
 		return ResponseEntity.noContent().build();
 	}
 

@@ -1,6 +1,7 @@
 package com.thoughtworks.app.ws.userservice.impl;
 
 import com.thoughtworks.app.ws.shared.Utils;
+import com.thoughtworks.app.ws.ui.model.request.UpdateUserDetailsRequestModel;
 import com.thoughtworks.app.ws.ui.model.request.UserDetailsRequestModel;
 import com.thoughtworks.app.ws.ui.model.response.UserRest;
 import com.thoughtworks.app.ws.userservice.UserService;
@@ -38,5 +39,21 @@ public class UserServiceImpl implements UserService {
         users.put(userId, returnValue);
 
         return returnValue;
+    }
+
+    @Override
+    public UserRest updateUser(String userId,UpdateUserDetailsRequestModel userDetails) {
+        UserRest storedUserDetails = users.get(userId);
+        storedUserDetails.setFirstName(userDetails.getFirstName());
+        storedUserDetails.setLastName(userDetails.getLastName());
+
+        users.put(userId, storedUserDetails);
+
+        return storedUserDetails;
+    }
+
+    @Override
+    public void deleteUser(String userId) {
+        users.remove(userId);
     }
 }
