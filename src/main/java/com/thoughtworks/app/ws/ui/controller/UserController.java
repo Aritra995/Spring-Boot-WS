@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.thoughtworks.app.ws.ui.model.response.UserRest;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 
 @RestController
 @RequestMapping("/users")
@@ -29,13 +31,13 @@ public class UserController {
 					MediaType.APPLICATION_XML_VALUE, 
 					MediaType.APPLICATION_JSON_VALUE
 					})
-	public UserRest getUser(@PathVariable String userId) {
+	public ResponseEntity<UserRest> getUser(@PathVariable String userId) {
 		UserRest returnValue = new UserRest();
 		returnValue.setFirstName("Aritra");
 		returnValue.setLastName("Chaudhury");
 		returnValue.setEmail("aritra.chaudhury@thoughtworks.com");
 		
-		return returnValue;
+		return new ResponseEntity<UserRest>(returnValue,HttpStatus.OK );
 	}
 	
 	@PostMapping
