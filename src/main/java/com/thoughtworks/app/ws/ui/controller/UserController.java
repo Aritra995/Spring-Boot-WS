@@ -1,6 +1,7 @@
 package com.thoughtworks.app.ws.ui.controller;
 
-import com.thoughtworks.app.ws.exceptions.UserServiceException;
+import com.thoughtworks.app.ws.userservice.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,7 +19,6 @@ import jakarta.validation.Valid;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -29,6 +29,9 @@ import org.springframework.http.ResponseEntity;
 public class UserController {
 	
 	Map<String, UserRest> users;
+
+	@Autowired
+	UserService userService;
 	
 	@GetMapping
 	public String getUsers(@RequestParam(value="page", defaultValue = "1") int page,
@@ -63,17 +66,7 @@ public class UserController {
 					MediaType.APPLICATION_JSON_VALUE
 					} )
 	public ResponseEntity<UserRest> createUser(@Valid @RequestBody UserDetailsRequestModel userDetails) {
-		UserRest returnValue = new UserRest();
-		returnValue.setFirstName(userDetails.getFirstName());
-		returnValue.setLastName(userDetails.getLastName());
-		returnValue.setEmail(userDetails.getEmail());
-		
-		String userId = UUID.randomUUID().toString();
-		returnValue.setUserId(userId);
-		
-		if (users == null) users = new HashMap<>();
-		users.put(userId, returnValue);
-		
+		UserRest returnValue = userService.createUser(userDetails);
 		return new ResponseEntity<UserRest>(returnValue,HttpStatus.OK );
 	}
 	
@@ -92,12 +85,12 @@ public class UserController {
 		UserRest storedUserDetails = users.get(userId);
 		storedUserDetails.setFirstName(userDetails.getFirstName());
 		storedUserDetails.setLastName(userDetails.getLastName());
-		
+
 		users.put(userId, storedUserDetails);
 		
 		return storedUserDetails;
 	}
-	
+
 	@DeleteMapping(path = "/{userId}")
 	public ResponseEntity<Void> deleteUser(@PathVariable String userId) {
 		users.remove(userId);
